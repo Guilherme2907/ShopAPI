@@ -7,11 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using ShopAPI.Models.Configuration;
 using ShopAPI.Models.Entities;
 using ShopAPI.Repositories.Contexts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ShopAPI.Repositories
 {
@@ -24,7 +20,7 @@ namespace ShopAPI.Repositories
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDefaultIdentity<User>()
-                .AddRoles<IdentityRole>()
+                .AddRoles<Role>()
                 .AddEntityFrameworkStores<UserDbContext>()
                 .AddErrorDescriber<IdentityErrorDescriber>()
                 .AddDefaultTokenProviders();

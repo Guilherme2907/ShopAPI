@@ -20,24 +20,23 @@ namespace ShopAPI.Services.Implementations.Auth
     {
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserDbContext _userDbContext;
         private readonly AppSettings _appSettings;
+        private const string DEFAULT_ROLE = "Customer";
+        private const string ROLE = "role";
 
         public AuthService(SignInManager<User> signInManager
                             , UserManager<User> userManager
-                            , RoleManager<IdentityRole> roleManager
                             , UserDbContext userDbContext
                             , IOptions<AppSettings> appSettings)
         {
             _signInManager = signInManager;
             _userManager = userManager;
-            _roleManager = roleManager;
             _userDbContext = userDbContext;
             _appSettings = appSettings.Value;
         }
 
-        public async Task<TokenViewModel> RegisterAsync(RegisterViewModel register)
+        public async Task<TokenResponseViewModel> RegisterAsync(RegisterRequestViewModel register)
         {
             var user = new User
             {
@@ -46,13 +45,13 @@ namespace ShopAPI.Services.Implementations.Auth
                 EmailConfirmed = true
             };
 
-            var result = await _userManager.CreateAsync(user, register.Password);
-            await _userManager.AddToRoleAsync(user, "Customer");
+            await _userManager.CreateAsync(user, register.Password);
+            await _userManager.AddToRoleAsync(user, DEFAULT_ROLE);
 
             return null;
         }
 
-        public async Task<TokenViewModel> SignInAsync(LoginViewModel user)
+        public async Task<TokenResponseViewModel> SignInAsync(LoginRequestViewModel user)
         {
             var result = await _signInManager.PasswordSignInAsync(user.Username, user.Password, false, true);
 
@@ -61,15 +60,13 @@ namespace ShopAPI.Services.Implementations.Auth
                 return await GenerateTokenAsync(user.Username);
             }
 
-            if (result.IsLockedOut)
-            {
-                return null;
-            }
-
             return null;
         }
 
-        private async Task<TokenViewModel> GenerateTokenAsync(string username)
+        /// <summary>
+        /// Generates a new access token and refresh token for the user with the specified username.
+        /// </summary>
+        private async Task<TokenResponseViewModel> GenerateTokenAsync(string username)
         {
             var user = await _userManager.FindByNameAsync(username);
 
@@ -77,25 +74,44 @@ namespace ShopAPI.Services.Implementations.Auth
 
             var identityClaims = new ClaimsIdentity(claims);
 
-            var accessToken = CreateToken(identityClaims);
+            var accessToken = CreateAccessToken(identityClaims);
 
-            var refreshToken = Guid.NewGuid().ToString();
+            var refreshToken = CreateRefreshToken();
 
+            await UpdateUserAsync(user, refreshToken);
+
+            return new TokenResponseViewModel(true
+                                      , TimeSpan.FromSeconds(_appSettings.HoursToEspireAccessToken).TotalSeconds
+                                      , accessToken
+                                      , refreshToken
+                                      , DateTime.Now.AddHours(_appSettings.HoursToEspireRefreshToken));
+        }
+
+        /// <summary>
+        /// Creates a new refresh token.
+        /// </summary>
+        private string CreateRefreshToken()
+        {
+            return Guid.NewGuid().ToString();
+        }
+
+        /// <summary>
+        /// Updates the user's refresh token in the database.
+        /// </summary>
+        private async Task UpdateUserAsync(User user, string refreshToken)
+        {
             user.RefreshToken = refreshToken;
 
-            user.RefreshTokenValidity = DateTime.Now.AddHours(2);
+            user.RefreshTokenValidity = DateTime.Now.AddHours(_appSettings.HoursToEspireRefreshToken);
 
             await _userManager.UpdateAsync(user);
 
             await _userDbContext.SaveChangesAsync();
-
-            return new TokenViewModel(true
-                                      , TimeSpan.FromSeconds(_appSettings.ExpiresIn).TotalSeconds
-                                      , accessToken
-                                      , refreshToken
-                                      , DateTime.Now.AddHours(2));
         }
 
+        /// <summary>
+        /// Adds additional claims to the user's token.
+        /// </summary>       
         private async Task<IList<Claim>> AddClaimsAsync(User user)
         {
             var claims = await _userManager.GetClaimsAsync(user);
@@ -107,12 +123,17 @@ namespace ShopAPI.Services.Implementations.Auth
             claims.Add(new Claim(JwtRegisteredClaimNames.Nbf, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()));
             claims.Add(new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64));
 
-            userRoles.ToList().ForEach(r => claims.Add(new Claim("role", r)));
+            userRoles.ToList().ForEach(r => claims.Add(new Claim(ROLE, r)));
 
             return claims;
         }
 
-        private string CreateToken(ClaimsIdentity identityClaims)
+        /// <summary>
+        /// This method creates an access token for a user by creating a security token using JwtSecurityTokenHandler.
+        /// It takes the claims identity of the user as input along with the expiration time for the token and the security key.
+        /// Returns the encoded token as a string.
+        /// </summary>
+        private string CreateAccessToken(ClaimsIdentity identityClaims)
         {
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -122,7 +143,7 @@ namespace ShopAPI.Services.Implementations.Auth
                 Issuer = _appSettings.Issuer,
                 Audience = _appSettings.ValidIn,
                 Subject = identityClaims,
-                Expires = DateTime.UtcNow.AddHours(_appSettings.ExpiresIn),
+                Expires = DateTime.UtcNow.AddHours(_appSettings.HoursToEspireAccessToken),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
             });
 
@@ -131,7 +152,7 @@ namespace ShopAPI.Services.Implementations.Auth
             return encodedToken;
         }
 
-        public async Task<TokenViewModel> RefreshTokenAsync(RefreshTokenViewModel token)
+        public async Task<TokenResponseViewModel> RefreshTokenAsync(RefreshRequestTokenViewModel token)
         {
             var user = await _userManager.FindByNameAsync(token.Username);
 

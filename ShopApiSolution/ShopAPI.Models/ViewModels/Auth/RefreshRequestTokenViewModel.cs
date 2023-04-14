@@ -1,6 +1,6 @@
 ﻿namespace ShopAPI.Models.ViewModels.Auth
 {
-    public class RefreshTokenViewModel
+    public class RefreshRequestTokenViewModel
     {
         public string RefreshToken { get; set; }
 

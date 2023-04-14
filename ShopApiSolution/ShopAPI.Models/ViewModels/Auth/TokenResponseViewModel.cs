@@ -2,7 +2,7 @@
 
 namespace ShopAPI.Models.ViewModels.Auth
 {
-    public class TokenViewModel
+    public class TokenResponseViewModel
     {
         public bool Authenticated { get; set; }
 
@@ -14,7 +14,7 @@ namespace ShopAPI.Models.ViewModels.Auth
 
         public DateTime RefreshTokenValidity { get; set; }
 
-        public TokenViewModel(bool authenticated, double expiration, string accessToken, string refreshToken, DateTime refreshTokenVality)
+        public TokenResponseViewModel(bool authenticated, double expiration, string accessToken, string refreshToken, DateTime refreshTokenVality)
         {
             Authenticated = authenticated;
             Expiration = expiration;
