@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShopAPI.Models.ViewModels.Auth;
-using ShopAPI.Services.Interfaces.Auth;
+using ShopAPI.Services.Interfaces;
 using System.Threading.Tasks;
 
 namespace ShopAPI.Controllers
@@ -15,16 +15,6 @@ namespace ShopAPI.Controllers
         public AuthController(IAuthService userService)
         {
             _userService = userService;
-        }
-
-        /// <summary>
-        /// Registers a new user with the specified information.
-        /// Creates a new user with the provided information and adds them to the "Customer" role.
-        /// </summary>
-        [HttpPost("register")]
-        public async Task<IActionResult> RegisterAsync(RegisterRequestViewModel register)
-        {
-            return Ok(await _userService.RegisterAsync(register));
         }
 
         /// <summary>
@@ -46,13 +36,6 @@ namespace ShopAPI.Controllers
         public async Task<IActionResult> RefreshTokenAsync(RefreshRequestTokenViewModel token)
         {
             return Ok(await _userService.RefreshTokenAsync(token));
-        }
-
-        [Authorize]
-        [HttpGet("Teste")]
-        public async Task<IActionResult> Teste()
-        {
-            return Ok("Teste");
         }
     }
 }

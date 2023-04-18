@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShopAPI.Models.ViewModels.Admin;
-using ShopAPI.Services.Interfaces.Admin;
+using ShopAPI.Services.Interfaces;
 using System.Threading.Tasks;
 
 namespace ShopAPI.Controllers
