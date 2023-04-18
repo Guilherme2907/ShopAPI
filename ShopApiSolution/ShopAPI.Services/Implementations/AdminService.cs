@@ -3,33 +3,33 @@ using Microsoft.EntityFrameworkCore;
 using ShopAPI.Models.Entities;
 using ShopAPI.Models.ViewModels.Admin;
 using ShopAPI.Repositories.Contexts;
-using ShopAPI.Services.Interfaces.Admin;
+using ShopAPI.Services.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ShopAPI.Services.Implementations.Admin
+namespace ShopAPI.Services.Implementations
 {
     public class AdminService : IAdminService
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
-        private readonly UserDbContext _userDbContext;
+        private readonly ApplicationDbContext _dbContext;
 
         public AdminService(UserManager<User> userManager
                             , RoleManager<Role> roleManager
-                            , UserDbContext userDbContext)
+                            , ApplicationDbContext dbContext)
         {
             // Constructor method to inject dependencies.
             _userManager = userManager;
             _roleManager = roleManager;
-            _userDbContext = userDbContext;
+            _dbContext = dbContext;
         }
 
         public async Task<IEnumerable<RoleResponseViewModel>> GetRolesAsync()
         {
             var rolesViewModelList = new List<RoleResponseViewModel>();
-            var roles = await _userDbContext.Roles.ToListAsync();
+            var roles = await _dbContext.Roles.ToListAsync();
             rolesViewModelList.AddRange(roles.Select(r => new RoleResponseViewModel(r)));
             return rolesViewModelList;
         }

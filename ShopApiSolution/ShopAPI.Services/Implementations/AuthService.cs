@@ -5,7 +5,7 @@ using ShopAPI.Models.Configuration;
 using ShopAPI.Models.Entities;
 using ShopAPI.Models.ViewModels.Auth;
 using ShopAPI.Repositories.Contexts;
-using ShopAPI.Services.Interfaces.Auth;
+using ShopAPI.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -14,41 +14,25 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShopAPI.Services.Implementations.Auth
+namespace ShopAPI.Services.Implementations
 {
     public class AuthService : IAuthService
     {
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
-        private readonly UserDbContext _userDbContext;
+        private readonly ApplicationDbContext _dbContext;
         private readonly AppSettings _appSettings;
-        private const string DEFAULT_ROLE = "Customer";
         private const string ROLE = "role";
 
         public AuthService(SignInManager<User> signInManager
                             , UserManager<User> userManager
-                            , UserDbContext userDbContext
+                            , ApplicationDbContext dbContext
                             , IOptions<AppSettings> appSettings)
         {
             _signInManager = signInManager;
             _userManager = userManager;
-            _userDbContext = userDbContext;
+            _dbContext = dbContext;
             _appSettings = appSettings.Value;
-        }
-
-        public async Task<TokenResponseViewModel> RegisterAsync(RegisterRequestViewModel register)
-        {
-            var user = new User
-            {
-                UserName = register.Username,
-                Email = register.Email,
-                EmailConfirmed = true
-            };
-
-            await _userManager.CreateAsync(user, register.Password);
-            await _userManager.AddToRoleAsync(user, DEFAULT_ROLE);
-
-            return null;
         }
 
         public async Task<TokenResponseViewModel> SignInAsync(LoginRequestViewModel user)
@@ -106,7 +90,7 @@ namespace ShopAPI.Services.Implementations.Auth
 
             await _userManager.UpdateAsync(user);
 
-            await _userDbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
 
         /// <summary>
@@ -157,8 +141,8 @@ namespace ShopAPI.Services.Implementations.Auth
             var user = await _userManager.FindByNameAsync(token.Username);
 
             if (user is null) return null;
-            
-            if(user.RefreshToken.Equals(token.RefreshToken) && user.RefreshTokenValidity >= DateTime.Now)
+
+            if (user.RefreshToken.Equals(token.RefreshToken) && user.RefreshTokenValidity >= DateTime.Now)
             {
                 return await GenerateTokenAsync(user.UserName);
             }

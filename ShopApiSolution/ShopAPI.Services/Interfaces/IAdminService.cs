@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ShopAPI.Services.Interfaces.Admin
+namespace ShopAPI.Services.Interfaces
 {
     public interface IAdminService
     {
