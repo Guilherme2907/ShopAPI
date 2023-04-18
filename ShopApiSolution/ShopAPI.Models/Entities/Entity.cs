@@ -4,7 +4,7 @@ namespace ShopAPI.Models.Entities
 {
     public abstract class Entity
     {
-        public Guid Id { get; set; }
+        public string Id = Guid.NewGuid().ToString();
 
         public DateTime CreatedDate { get; set; }
 
