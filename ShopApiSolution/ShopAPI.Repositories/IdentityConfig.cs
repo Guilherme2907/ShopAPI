@@ -16,12 +16,12 @@ namespace ShopAPI.Repositories
         public static IServiceCollection AddIdentityConfiguration(this IServiceCollection services
                                                                  , IConfiguration configuration)
         {
-            services.AddDbContext<UserDbContext>(options =>
+            services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDefaultIdentity<User>()
                 .AddRoles<Role>()
-                .AddEntityFrameworkStores<UserDbContext>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddErrorDescriber<IdentityErrorDescriber>()
                 .AddDefaultTokenProviders();
 

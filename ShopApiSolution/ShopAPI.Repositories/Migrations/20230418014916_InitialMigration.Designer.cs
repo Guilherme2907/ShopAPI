@@ -9,9 +9,9 @@ using ShopAPI.Repositories.Contexts;
 
 namespace ShopAPI.Repositories.Migrations
 {
-    [DbContext(typeof(UserDbContext))]
-    [Migration("20230413005856_AddDescriptionToRoleTable")]
-    partial class AddDescriptionToRoleTable
+    [DbContext(typeof(ApplicationDbContext))]
+    [Migration("20230418014916_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -129,6 +129,77 @@ namespace ShopAPI.Repositories.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("ShopAPI.Models.Entities.Address", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Block")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CEP")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RegisterId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("State")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Street")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("adresses");
+                });
+
+            modelBuilder.Entity("ShopAPI.Models.Entities.Register", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("id");
+
+                    b.Property<string>("AddressId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Age")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId")
+                        .IsUnique()
+                        .HasFilter("[AddressId] IS NOT NULL");
+
+                    b.ToTable("registers");
+                });
+
             modelBuilder.Entity("ShopAPI.Models.Entities.Role", b =>
                 {
                     b.Property<string>("Id")
@@ -162,7 +233,8 @@ namespace ShopAPI.Repositories.Migrations
             modelBuilder.Entity("ShopAPI.Models.Entities.User", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("id");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -207,6 +279,9 @@ namespace ShopAPI.Repositories.Migrations
                     b.Property<DateTime?>("RefreshTokenValidity")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("RegisterId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -226,6 +301,10 @@ namespace ShopAPI.Repositories.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("RegisterId")
+                        .IsUnique()
+                        .HasFilter("[RegisterId] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -279,6 +358,34 @@ namespace ShopAPI.Repositories.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ShopAPI.Models.Entities.Register", b =>
+                {
+                    b.HasOne("ShopAPI.Models.Entities.Address", "Address")
+                        .WithOne("Register")
+                        .HasForeignKey("ShopAPI.Models.Entities.Register", "AddressId");
+
+                    b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("ShopAPI.Models.Entities.User", b =>
+                {
+                    b.HasOne("ShopAPI.Models.Entities.Register", "Register")
+                        .WithOne("User")
+                        .HasForeignKey("ShopAPI.Models.Entities.User", "RegisterId");
+
+                    b.Navigation("Register");
+                });
+
+            modelBuilder.Entity("ShopAPI.Models.Entities.Address", b =>
+                {
+                    b.Navigation("Register");
+                });
+
+            modelBuilder.Entity("ShopAPI.Models.Entities.Register", b =>
+                {
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }
