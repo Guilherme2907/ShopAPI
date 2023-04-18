@@ -8,6 +8,8 @@ namespace ShopAPI.Models.ViewModels.Admin
 
         public string Description { get; set; }
 
+        protected RoleViewModel() { }
+
         protected RoleViewModel(Role role)
         {
             Name = role.Name;

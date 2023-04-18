@@ -6,10 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using ShopAPI.Repositories;
-using ShopAPI.Services.Implementations.Admin;
-using ShopAPI.Services.Implementations.Auth;
-using ShopAPI.Services.Interfaces.Admin;
-using ShopAPI.Services.Interfaces.Auth;
+using ShopAPI.Services.Implementations;
+using ShopAPI.Services.Interfaces;
 
 namespace ShopAPI
 {
@@ -31,6 +29,7 @@ namespace ShopAPI
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IAdminService, AdminService>();
+            services.AddScoped<IUserService, UserService>();
 
             services.AddSwaggerGen(c =>
             {
