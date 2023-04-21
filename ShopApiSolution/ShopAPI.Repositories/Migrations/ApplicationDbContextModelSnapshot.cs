@@ -131,7 +131,7 @@ namespace ShopAPI.Repositories.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     b.Property<string>("Block")
                         .HasColumnType("nvarchar(max)");
@@ -148,9 +148,6 @@ namespace ShopAPI.Repositories.Migrations
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("RegisterId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("State")
                         .HasColumnType("nvarchar(max)");
 
@@ -166,7 +163,7 @@ namespace ShopAPI.Repositories.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     b.Property<string>("AddressId")
                         .HasColumnType("nvarchar(450)");
@@ -187,13 +184,17 @@ namespace ShopAPI.Repositories.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AddressId")
                         .IsUnique()
                         .HasFilter("[AddressId] IS NOT NULL");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("registers");
                 });
@@ -232,7 +233,7 @@ namespace ShopAPI.Repositories.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -277,9 +278,6 @@ namespace ShopAPI.Repositories.Migrations
                     b.Property<DateTime?>("RefreshTokenValidity")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("RegisterId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -299,10 +297,6 @@ namespace ShopAPI.Repositories.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("RegisterId")
-                        .IsUnique()
-                        .HasFilter("[RegisterId] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -364,16 +358,13 @@ namespace ShopAPI.Repositories.Migrations
                         .WithOne("Register")
                         .HasForeignKey("ShopAPI.Models.Entities.Register", "AddressId");
 
+                    b.HasOne("ShopAPI.Models.Entities.User", "User")
+                        .WithOne("Register")
+                        .HasForeignKey("ShopAPI.Models.Entities.Register", "UserId");
+
                     b.Navigation("Address");
-                });
 
-            modelBuilder.Entity("ShopAPI.Models.Entities.User", b =>
-                {
-                    b.HasOne("ShopAPI.Models.Entities.Register", "Register")
-                        .WithOne("User")
-                        .HasForeignKey("ShopAPI.Models.Entities.User", "RegisterId");
-
-                    b.Navigation("Register");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ShopAPI.Models.Entities.Address", b =>
@@ -381,9 +372,9 @@ namespace ShopAPI.Repositories.Migrations
                     b.Navigation("Register");
                 });
 
-            modelBuilder.Entity("ShopAPI.Models.Entities.Register", b =>
+            modelBuilder.Entity("ShopAPI.Models.Entities.User", b =>
                 {
-                    b.Navigation("User");
+                    b.Navigation("Register");
                 });
 #pragma warning restore 612, 618
         }
