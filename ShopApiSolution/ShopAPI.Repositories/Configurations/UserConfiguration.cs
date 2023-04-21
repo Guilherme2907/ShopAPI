@@ -15,8 +15,14 @@ namespace ShopAPI.Repositories.Configurations
             modelBuilder
                 .Entity<User>()
                 .Property(u => u.Id)
-                .HasColumnName("id")
+                .HasColumnName("Id")
                 .IsRequired();
+
+            modelBuilder
+               .Entity<User>()
+               .HasOne(u => u.Register)
+               .WithOne(r => r.User)
+               .HasForeignKey<Register>(r => r.UserId);
         }
     }
 }
