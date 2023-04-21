@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ShopAPI.Models.Entities;
 using ShopAPI.Repositories.Configurations;
+using System;
 
 namespace ShopAPI.Repositories.Contexts
 {

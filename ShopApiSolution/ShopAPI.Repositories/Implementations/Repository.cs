@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShopAPI.Models.Entities;
+using ShopAPI.Repositories.Contexts;
 using ShopAPI.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -7,18 +8,18 @@ using System.Threading.Tasks;
 
 namespace ShopAPI.Repositories.Implementations
 {
-    public abstract class Repository<T> : IRepository<T> where T : Entity
+    public class Repository<T> : IRepository<T> where T : Entity
     {
-        protected DbContext _context;
+        protected ApplicationDbContext _context;
         protected DbSet<T> _dbSet;
 
-        public Repository(DbContext context)
+        public Repository(ApplicationDbContext context)
         {
             _context = context;
             _dbSet = _context.Set<T>();
         }
 
-        public async Task<T> GetById(Guid id)
+        public async Task<T> GetById(string id)
         {
             return await _dbSet.FindAsync(id);
         }
@@ -31,8 +32,6 @@ namespace ShopAPI.Repositories.Implementations
         public async Task<T> CreateAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
-
-            await _context.SaveChangesAsync();
 
             return entity;
         }
@@ -48,12 +47,10 @@ namespace ShopAPI.Repositories.Implementations
 
             _context.Entry(entityToBeUpdated).CurrentValues.SetValues(entity);
 
-            _context.SaveChanges();
-
             return entity;
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(string id)
         {
             var entity = await _dbSet.FindAsync(id);
 
@@ -63,8 +60,6 @@ namespace ShopAPI.Repositories.Implementations
             }
 
             _dbSet.Remove(entity);
-
-            await _context.SaveChangesAsync();
 
             return true;
         }

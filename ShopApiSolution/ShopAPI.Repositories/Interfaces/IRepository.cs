@@ -11,10 +11,10 @@ namespace ShopAPI.Repositories.Interfaces
 
         Task<T> UpdateAsync(T entity);
 
-        Task<bool> DeleteAsync(Guid id);
+        Task<bool> DeleteAsync(string id);
 
         Task<IList<T>> GetAllAsync();
 
-        Task<T> GetById(Guid id);
+        Task<T> GetById(string id);
     }
 }

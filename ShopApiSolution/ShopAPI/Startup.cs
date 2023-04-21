@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -6,6 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using ShopAPI.Repositories;
+using ShopAPI.Repositories.Implementations;
+using ShopAPI.Repositories.Interfaces;
+using ShopAPI.Services;
 using ShopAPI.Services.Implementations;
 using ShopAPI.Services.Interfaces;
 
@@ -30,6 +34,8 @@ namespace ShopAPI
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddMediatR(typeof(ShopAPIMediatorEntryPoint).Assembly);
 
             services.AddSwaggerGen(c =>
             {
