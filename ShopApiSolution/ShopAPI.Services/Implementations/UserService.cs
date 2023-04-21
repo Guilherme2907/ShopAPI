@@ -17,7 +17,7 @@ namespace ShopAPI.Services.Implementations
             _userManager = userManager;
         }
 
-        public async Task<TokenResponseViewModel> RegisterAsync(RegisterRequestViewModel register)
+        public async Task<TokenResponseViewModel> RegisterAsync(RegisterLoginRequestViewModel register)
         {
             var user = new User
             {

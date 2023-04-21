@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.7.1" />
   </ItemGroup>
@@ -12,6 +13,10 @@
   <ItemGroup>
     <ProjectReference Include="..\ShopAPI.Models\ShopAPI.Models.csproj" />
     <ProjectReference Include="..\ShopAPI.Repositories\ShopAPI.Repositories.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Commands\" />
   </ItemGroup>
 
 </Project>
