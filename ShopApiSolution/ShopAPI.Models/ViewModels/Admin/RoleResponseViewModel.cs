@@ -1,4 +1,5 @@
 ﻿using ShopAPI.Models.Entities;
+using System;
 
 namespace ShopAPI.Models.ViewModels.Admin
 {

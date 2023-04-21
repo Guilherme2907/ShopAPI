@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace ShopAPI.Models.Entities
+﻿namespace ShopAPI.Models.ViewModels.Register
 {
-    public class Address : Entity
+    public class AddressViewModel
     {
         public string Street { get; set; }
 
@@ -13,7 +11,5 @@ namespace ShopAPI.Models.Entities
         public string State { get; set; }
 
         public string CEP { get; set; }
-
-        public Register Register { get; set; }
     }
 }

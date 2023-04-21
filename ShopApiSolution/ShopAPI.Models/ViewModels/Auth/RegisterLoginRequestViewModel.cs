@@ -1,6 +1,6 @@
 ﻿namespace ShopAPI.Models.ViewModels.Auth
 {
-    public class RegisterRequestViewModel
+    public class RegisterLoginRequestViewModel
     {
         public string Username { get; set; }
 

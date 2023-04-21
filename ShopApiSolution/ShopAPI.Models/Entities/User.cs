@@ -9,8 +9,6 @@ namespace ShopAPI.Models.Entities
 
         public DateTime? RefreshTokenValidity { get; set; }
 
-        public string RegisterId { get; set; }
-
         public Register Register { get; set; }
     }
 }
