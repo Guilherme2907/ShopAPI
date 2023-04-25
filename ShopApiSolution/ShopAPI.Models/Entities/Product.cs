@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace ShopAPI.Models.Entities
 {
@@ -8,6 +9,7 @@ namespace ShopAPI.Models.Entities
 
         public decimal Price { get; set; }
 
+        [JsonIgnore]
         public IList<OrderItem> Items { get; set; }
     }
 }

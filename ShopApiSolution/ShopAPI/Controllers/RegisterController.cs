@@ -18,14 +18,14 @@ namespace ShopAPI.Controllers
 
         [HttpPost("{userId}")]
         public async Task<IActionResult> CreateRegisterAsync([FromRoute] string userId
-                                                        , [FromBody] RegisterRequestViewModel request)
+                                                            , [FromBody] RegisterRequestViewModel request)
         {
             return Ok(await _mediator.Send(new CreateRegisterCommand(userId, request)));
         }
 
         [HttpPut("{userId}")]
         public async Task<IActionResult> UpdateRegisterAsync([FromRoute] string userId
-                                                      , [FromBody] RegisterRequestViewModel request)
+                                                            , [FromBody] RegisterRequestViewModel request)
         {
             return Ok(await _mediator.Send(new UpdateRegisterCommand(userId, request)));
         }
