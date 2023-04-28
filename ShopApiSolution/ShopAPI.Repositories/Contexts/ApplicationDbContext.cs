@@ -14,6 +14,7 @@ namespace ShopAPI.Repositories.Contexts
         public DbSet<Register> Registers { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> Items { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
