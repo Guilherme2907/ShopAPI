@@ -8,10 +8,10 @@ namespace ShopAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RegisterController : ControllerBase
+    public class RegistersController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public RegisterController(IMediator mediator)
+        public RegistersController(IMediator mediator)
         {
             _mediator = mediator;
         }
