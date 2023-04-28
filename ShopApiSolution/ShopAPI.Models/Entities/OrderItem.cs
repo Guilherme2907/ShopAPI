@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShopAPI.Models.ViewModels.Orders;
+using System;
 
 namespace ShopAPI.Models.Entities
 {
@@ -13,5 +14,16 @@ namespace ShopAPI.Models.Entities
         public Order Order { get; set; }
 
         public string OrderId { get; set; }
+
+        public OrderItem()
+        {
+        }
+
+        public OrderItem(OrderItemRequestViewModel orderItem, string orderId)
+        {
+            ProductId = orderItem.ProductId;
+            OrderId = orderId;
+            Quantity = orderItem.Quantity;
+        }
     }
 }
