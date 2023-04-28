@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShopAPI.Repositories.Contexts;
 
 namespace ShopAPI.Repositories.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230428021008_CreateValueFieldOnOrderItemTable")]
+    partial class CreateValueFieldOnOrderItemTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -171,9 +173,6 @@ namespace ShopAPI.Repositories.Migrations
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("PaymentId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<decimal>("TotalValue")
                         .HasColumnType("decimal(18,2)");
 
@@ -181,10 +180,6 @@ namespace ShopAPI.Repositories.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PaymentId")
-                        .IsUnique()
-                        .HasFilter("[PaymentId] IS NOT NULL");
 
                     b.HasIndex("UserId");
 
@@ -222,34 +217,6 @@ namespace ShopAPI.Repositories.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("order-items");
-                });
-
-            modelBuilder.Entity("ShopAPI.Models.Entities.Payment", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LastModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("OrderId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("PaymentStatus")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("payments");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Payment");
                 });
 
             modelBuilder.Entity("ShopAPI.Models.Entities.Product", b =>
@@ -417,29 +384,6 @@ namespace ShopAPI.Repositories.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("ShopAPI.Models.Entities.PaymentWithBillet", b =>
-                {
-                    b.HasBaseType("ShopAPI.Models.Entities.Payment");
-
-                    b.Property<DateTime>("DueDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("PayDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasDiscriminator().HasValue("PaymentWithBillet");
-                });
-
-            modelBuilder.Entity("ShopAPI.Models.Entities.PaymentWithCreditCard", b =>
-                {
-                    b.HasBaseType("ShopAPI.Models.Entities.Payment");
-
-                    b.Property<int>("Installments")
-                        .HasColumnType("int");
-
-                    b.HasDiscriminator().HasValue("PaymentWithCreditCard");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("ShopAPI.Models.Entities.Role", null)
@@ -493,15 +437,9 @@ namespace ShopAPI.Repositories.Migrations
 
             modelBuilder.Entity("ShopAPI.Models.Entities.Order", b =>
                 {
-                    b.HasOne("ShopAPI.Models.Entities.Payment", "Payment")
-                        .WithOne("Order")
-                        .HasForeignKey("ShopAPI.Models.Entities.Order", "PaymentId");
-
                     b.HasOne("ShopAPI.Models.Entities.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId");
-
-                    b.Navigation("Payment");
 
                     b.Navigation("User");
                 });
@@ -546,11 +484,6 @@ namespace ShopAPI.Repositories.Migrations
             modelBuilder.Entity("ShopAPI.Models.Entities.Order", b =>
                 {
                     b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("ShopAPI.Models.Entities.Payment", b =>
-                {
-                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("ShopAPI.Models.Entities.Product", b =>

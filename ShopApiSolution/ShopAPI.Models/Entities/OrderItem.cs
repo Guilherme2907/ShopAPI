@@ -7,6 +7,8 @@ namespace ShopAPI.Models.Entities
     {
         public int Quantity { get; set; }
 
+        public decimal Value { get; set; }
+
         public Product Product { get; set; }
 
         public string ProductId { get; set; }
