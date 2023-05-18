@@ -1,12 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using ShopAPI.Models.ViewModels.Orders;
-using ShopAPI.Models.ViewModels.Products;
 using ShopAPI.Services.Orders.Commands.CreateOrder;
 using ShopAPI.Services.Orders.Queries.GetOrders;
-using ShopAPI.Services.Products.Commands.CreateProduct;
-using ShopAPI.Services.Products.Queries.GetProductById;
-using ShopAPI.Services.Products.Queries.GetProducts;
 using System.Threading.Tasks;
 
 namespace ShopAPI.Controllers
