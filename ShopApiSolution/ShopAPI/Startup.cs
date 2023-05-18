@@ -6,12 +6,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using ShopAPI.Models.Entities;
+using ShopAPI.Models.ViewModels.Enums;
 using ShopAPI.Repositories;
 using ShopAPI.Repositories.Implementations;
 using ShopAPI.Repositories.Interfaces;
 using ShopAPI.Services;
 using ShopAPI.Services.Implementations;
 using ShopAPI.Services.Interfaces;
+using System;
 
 namespace ShopAPI
 {
@@ -36,6 +39,19 @@ namespace ShopAPI
             services.AddScoped<IUserService, UserService>();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddMediatR(typeof(ShopAPIMediatorEntryPoint).Assembly);
+
+            services.AddScoped<PaymentWithCreditCardService>();
+            services.AddScoped<PaymentWithBilletService>();
+
+            services.AddTransient<Func<PaymentType, IPaymentService>>(serviceProvider => key =>
+            {
+                return key switch
+                {
+                    PaymentType.PaymentWithCreditCard => serviceProvider.GetService<PaymentWithCreditCardService>(),
+                    PaymentType.PaymentWithBillet => serviceProvider.GetService<PaymentWithBilletService>(),
+                    _ => throw new ArgumentException("Invalid payment type")
+                };
+            });
 
             services.AddSwaggerGen(c =>
             {
