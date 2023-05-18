@@ -28,9 +28,10 @@ namespace ShopAPI.Services.Orders.Queries.GetOrders
                                             .Include(o => o.User)
                                             .Include(o => o.Items)
                                             .ThenInclude(i => i.Product)
+                                            .Include(o => o.Payment)
                                             .FirstOrDefaultAsync(o => o.Id == request.Id);
 
-            var response = new OrderResponseViewModel(order);
+            var response = OrderResponseViewModel.ToModelView(order);
 
             return response;
         }

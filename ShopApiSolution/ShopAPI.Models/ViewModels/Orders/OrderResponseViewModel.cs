@@ -8,15 +8,22 @@ namespace ShopAPI.Models.ViewModels.Orders
     {
         public string Id { get; set; }
 
+        public PaymentResponseViewModel Payment { get; set; }
+
         public IEnumerable<OrderItemResponseViewModel> Items { get; set; }
 
-        public OrderResponseViewModel(Order order)
+        public static OrderResponseViewModel ToModelView(Order order)
         {
-            Id = order.Id;
-            UserId = order.UserId;
-            Items = order.Items
+            return new OrderResponseViewModel
+            {
+                Id = order.Id,
+                UserId = order.UserId,
+                Items = order.Items
                             .ToList()
-                            .Select(i => new OrderItemResponseViewModel(i));
+                            .Select(i => new OrderItemResponseViewModel(i)),
+                Payment = PaymentResponseViewModel.ToModelView(order.Payment)
+            };
         }
     }
 }
+

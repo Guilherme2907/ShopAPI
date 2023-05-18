@@ -4,6 +4,7 @@ using ShopAPI.Models.Entities;
 using ShopAPI.Models.ViewModels.Orders;
 using ShopAPI.Repositories.Contexts;
 using ShopAPI.Repositories.Interfaces;
+using ShopAPI.Services.Factories;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -30,6 +31,7 @@ namespace ShopAPI.Services.Orders.Queries.GetOrders
                                             .Include(o => o.User)
                                             .Include(o => o.Items)
                                             .ThenInclude(i => i.Product)
+                                            .Include(o => o.Payment)
                                             .ToListAsync();
 
             var response = orders.Select(o => new OrderResponseViewModel(o));

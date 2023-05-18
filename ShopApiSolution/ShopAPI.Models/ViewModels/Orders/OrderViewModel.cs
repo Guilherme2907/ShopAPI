@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using ShopAPI.Models.ViewModels.Enums;
 
 namespace ShopAPI.Models.ViewModels.Orders
 {
