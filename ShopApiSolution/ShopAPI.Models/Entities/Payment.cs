@@ -9,8 +9,5 @@ namespace ShopAPI.Models.Entities
 
         [JsonIgnore]
         public virtual Order Order { get; set; }
-
-        [JsonIgnore]
-        public long OrderId { get; set; }
     }
 }

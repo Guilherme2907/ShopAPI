@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShopAPI.Models.ViewModels.Orders;
+using System;
 
 namespace ShopAPI.Models.Entities
 {
@@ -7,5 +8,12 @@ namespace ShopAPI.Models.Entities
         public DateTime DueDate { get; set; }
 
         public DateTime? PayDate { get; set; }
+
+        public PaymentWithBillet() { }
+
+        public PaymentWithBillet(PaymentRequestViewModel paymentRequest)
+        {
+            DueDate = paymentRequest.DueDate;
+        }
     }
 }

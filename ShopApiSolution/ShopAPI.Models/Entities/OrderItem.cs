@@ -21,10 +21,9 @@ namespace ShopAPI.Models.Entities
         {
         }
 
-        public OrderItem(OrderItemRequestViewModel orderItem, string orderId)
+        public OrderItem(OrderItemRequestViewModel orderItem)
         {
             ProductId = orderItem.ProductId;
-            OrderId = orderId;
             Quantity = orderItem.Quantity;
         }
     }
